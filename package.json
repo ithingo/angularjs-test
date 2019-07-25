@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/ithingo/angularjs-test/issues"
   },
-  "homepage": "https://github.com/ithingo/angularjs-test#readme"
+  "homepage": "https://github.com/ithingo/angularjs-test#readme",
+  "dependencies": {
+    "@uirouter/angularjs": "^1.0.22",
+    "angular": "^1.7.8"
+  }
 }
