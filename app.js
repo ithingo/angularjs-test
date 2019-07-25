@@ -69,14 +69,19 @@ angular.module('main').component('newItemComponent', {
 
 angular.module('main').component('listComponent', {
   templateUrl: 'partials/listComponent.html',
-  bindings: { allItems: '<' }
+  bindings: { allItems: '<' },
+  controller: function($scope, $location) {
+    $scope.goTo = function(animal) {
+      $location.path('/item/' + animal.id); // navigation by hand, works but with no data passing
+    }
+  }
 });
 
 
 // routing
 myApp.config(function($stateProvider, $urlRouterProvider) {
   var states = [
-    homePage = {
+    homePageState = {
       name: 'home',
       url: '/',
       template: '<h3>Home page works</h3>'
