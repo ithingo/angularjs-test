@@ -1,81 +1,52 @@
-var myApp = angular.module('main', ['ui.router']);
+var myApp = angular.module('main', ['ui.router'], function($rootScopeProvider) {
+  $rootScopeProvider.digestTtl(15); // increase timer for checking
+});
 
 // controller (mvC)
 myApp.controller('mainController', function($scope) {
-  var data = 'Hello from the other side!'; // not accessable in template!
-  $scope.data = 'some data'; // accessable in template!
   $scope.routeClickHandler = function() {
-    console.log($scope.$$watchers);
+    console.log(window.location.pathname);
   }
 });
 
-// routing
-myApp.config(function($stateProvider) {
-  var homePage = {
-    name: 'home',
-    url: '/',
-    template: '<h3>Home page works</h3>'
+// service
+myApp.factory('ItemsService', function() {
+  var service = {
+    getList: function() {
+      return new Promise(function(resolve, reject) {
+        var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType("application/json");
+        xobj.open('GET', 'data/items.json', true);
+        xobj.onreadystatechange = function () {
+          if (xobj.readyState == 4 && xobj.status == "200") {
+            resolve(JSON.parse(xobj.response));
+          }
+        };
+        xobj.send(null);
+      });
+    },
+    getItem: function(id) {
+      return this.getList().then(function(list) {
+        return list.find(function(item) {
+          item.id === id;
+        })
+      });
+    }
   };
-  var listPageState = {
-    name: 'list',
-    url: '/list',
-    component: 'listComponent'
-  };
-  var newPageState = {
-    name: 'new',
-    url: '/new',
-    component: 'newItemComponent'
-  };
-
-  $stateProvider.state(homePage);
-  $stateProvider.state(listPageState);
-  $stateProvider.state(newPageState);
+  return service;
 });
+
 
 // components
-myApp.component('listComponent', {
-  template: '<ul>' +
-            '<li ng-repeat="animal in testAnimalList">' +
-            '<p>' +
-            '<span>{{animal.name + ", " + animal.dob + ", from " + animal.country}}</span>' +
-            '</p>' +
-            '</li>' +
-            '</ul>',
-  controller: function($scope) {
-    $scope.testAnimalList = [
-      {
-        name: 'Doddy',
-        dob: '26/2/2018',
-        country: 'US'
-      },
-      {
-        name: 'Kitty',
-        dob: '27/2/2018',
-        country: 'UK'
-      },
-      {
-        name: 'Fluffy',
-        dob: '24/1/2018',
-        country: 'France'
-      },
-    ];
-
-  }
+angular.module('main').component('itemDetails', {
+  bindings: {
+    itemDetails: '<'
+  },
+  templateUrl: 'partials/itemDetails.html'
 });
 
-myApp.component('newItemComponent', {
-  template: '<form ng-submit="supmitForm(formValue)">' +
-            '   <label>Name: </label>' +
-            '   <input type="text" ng-model="formValue.name">' +
-            '   <br>' +
-            '   <label>Date of birth: </label>' +
-            '   <input type="text" ng-model="formValue.dob">' +
-            '   <br>' +
-            '   <label>Country: </label>' +
-            '   <input type="text" ng-model="formValue.country">' +
-            '   <br>' +
-            '   <button type="submit">Submit</button>' +
-            '<form>',
+angular.module('main').component('newItemComponent', {
+  templateUrl: 'partials/newItemComponent.html',
   controller: function($scope, $location) {
     $scope.master = {
       name: '',
@@ -91,7 +62,55 @@ myApp.component('newItemComponent', {
       console.log(formValue);
       $scope.master = angular.copy(formValue);
       // add new item
-      $location.path('/list')
+      $location.path('/items')
     }
   }
+});
+
+angular.module('main').component('listComponent', {
+  templateUrl: 'partials/listComponent.html',
+  bindings: { allItems: '<' }
+});
+
+
+// routing
+myApp.config(function($stateProvider, $urlRouterProvider) {
+  var states = [
+    homePage = {
+      name: 'home',
+      url: '/',
+      template: '<h3>Home page works</h3>'
+    },
+    listPageState = {
+      name: 'list',
+      url: '/items',
+      component: 'listComponent',
+      resolve: {
+        allItems: function(ItemsService) {
+          return ItemsService.getList();
+        }
+      }
+    },
+    listPageState = {
+      name: 'item',
+      url: '/item/{id}',
+      component: 'itemDetails',
+      resolve: {
+        itemDetails: function(ItemsService, $transition$) {
+          return ItemsService.getItem($transition$.params().id);
+        }
+      }
+    },
+    newPageState = {
+      name: 'new',
+      url: '/new',
+      component: 'newItemComponent'
+    }
+  ];
+  
+  states.forEach(function(state) {
+    $stateProvider.state(state);
+  });
+
+  $urlRouterProvider.otherwise('/');
 });
