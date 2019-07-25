@@ -1,0 +1,23 @@
+{
+  "name": "angularjs-1.7-test",
+  "version": "1.0.0",
+  "description": "test app in Angular.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ithingo/angularjs-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ithingo/angularjs-test/issues"
+  },
+  "homepage": "https://github.com/ithingo/angularjs-test#readme",
+  "dependencies": {
+    "@uirouter/angularjs": "^1.0.22",
+    "angular": "^1.7.8"
+  }
+}

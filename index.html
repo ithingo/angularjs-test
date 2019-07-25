@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" ng-app>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Angularjs 1.7 test app</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
-</head>
-<body>
-  <div>
-    <label for="name">What's your name? </label>
-    <input type="text" ng-model="person.name" id="name">
-  </div>
-  <div>
-    <label for="age">How old are you? </label>
-    <input type="text" ng-model="person.age" id="age">
-  </div>
-  <hr>
-  <p>Hi! You are {{person.name}}, {{person.age}} years old developer!</p>
-</body>
+<html ng-app="main">
+  <head>
+    <meta charset="utf-8">
+    <title>AngularJS 1.7 example</title>
+  </head>
+  <body ng-controller="mainController">
+    <div>
+      <a ui-sref="home" ui-sref-active="active" ng-click="routeClickHandler()">Home</a>
+      <span>|</span>
+      <a ui-sref="list" ui-sref-active="active" ng-click="routeClickHandler()">Item list</a>
+      <span>|</span>
+      <a ui-sref="new" ui-sref-active="active" ng-click="routeClickHandler()">New item</a>
+  
+      <!-- test data -->
+      <p>{{data}}</p>
+    </div>
+
+    <ui-view></ui-view>
+  </body>
+  <script type="text/javascript" src="./node_modules/angular/angular.js"></script>
+  <script src="./node_modules/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
+  <script type="text/javascript" src="./app.js"></script>
 </html>
