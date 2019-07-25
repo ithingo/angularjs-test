@@ -1,0 +1,6 @@
+<ul>
+  <!-- @FIXME: routing to item's page (by id) is not working -->
+  <li ng-repeat="animal in $ctrl.allItems" ui-sref="itemDetails({id: animal.id})" style="cursor: pointer"> 
+    <p>{{animal.name + ", " + animal.dob + ", from " + animal.country}}</p> 
+  </li> 
+</ul>
