@@ -18,6 +18,6 @@
   "homepage": "https://github.com/ithingo/angularjs-test#readme",
   "dependencies": {
     "@uirouter/angularjs": "^1.0.22",
-    "angular": "^1.7.8"
+    "angular": "^1.7.9"
   }
 }
